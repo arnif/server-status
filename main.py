@@ -4,6 +4,7 @@ from flask import jsonify
 from collections import namedtuple
 import subprocess
 import os, sys, json, math
+from Server import *
 app = Flask(__name__)
 cors = CORS(app)
 
@@ -11,10 +12,16 @@ cors = CORS(app)
 def hello():
     return "Hello World!"
 
+@app.route("/api/server")
+def getAll():
+    f = Server.test(22)
+    print type(f)
+    return jsonify(number=f)
+
 @app.route("/api/server/temp")
 def getCPUTemp():
-    temp = subprocess.check_output("sensors | grep 'Core 1'", shell=True)[17:21]
-    return jsonify(temperature=temp)
+    temp = Server.getCPUtemp()
+    return jsonify(temp)
 
 
 @app.route("/api/server/cpu")
