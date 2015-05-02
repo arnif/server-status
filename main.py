@@ -3,7 +3,7 @@ from flask.ext.cors import CORS
 from flask import jsonify
 from collections import namedtuple
 import subprocess
-import os, sys, json
+import os, sys, json, math
 app = Flask(__name__)
 cors = CORS(app)
 
@@ -35,6 +35,15 @@ def getHDDStatus():
     c = disk_usage("/")
     return jsonify(harddrives=[bak, one, c])
 
+@app.route("/api/server/uptime")
+def getUptime():
+    up_time = subprocess.check_output("cut -d. -f1 /proc/uptime", shell=True).rstrip('\n')
+    up_time = float(up_time)
+    days = int(math.floor(up_time / 60 / 60 / 24))
+    hrs = int(up_time / 60 / 60 % 24)
+    mins = int(up_time / 60 % 60)
+    secs = int(up_time % 60)
+    return jsonify(days=days, hours=hrs, mins=mins, secs=secs)
 
 def disk_usage(path):
     """Return disk usage statistics about the given path.
