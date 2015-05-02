@@ -16,9 +16,15 @@ def getCPUTemp():
 
 
 @app.route("/api/server/cpu")
-def getMEMUsage():
+def getCPUUsage():
     cpuUsage = subprocess.check_output("top -d 0.5 -b -n2 | grep 'Cpu(s)'|tail -n 1 | awk '{print $2 + $4}'", shell=True).rstrip('\n')
     return jsonify(usage=cpuUsage)
+
+@app.route("/api/server/memory")
+def getMEMStatus():
+    memtotal = subprocess.check_output("cat /proc/meminfo | grep MemTotal | sed 's/ //g'", shell=True)[9:16]
+    memfree = subprocess.check_output("cat /proc/meminfo | grep MemFree | sed 's/ //g'", shell=True)[8:14]
+    return jsonify(total=memtotal, free=memfree)
 
 if __name__ == "__main__":
      app.run(host='0.0.0.0', port=8081)
