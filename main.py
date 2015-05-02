@@ -21,7 +21,6 @@ def getAll():
 @app.route("/api/server/temp")
 def getCPUTemp():
     temp = Server.getCPUtemp()
-    print temp
     return jsonify(temp)
 
 
